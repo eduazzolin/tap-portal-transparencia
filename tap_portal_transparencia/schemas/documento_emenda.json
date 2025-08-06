@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "data": {
+      "type": "string"
+    },
+    "fase": {
+      "type": "string"
+    },
+    "codigoDocumento": {
+      "type": "string"
+    },
+    "codigoDocumentoResumido": {
+      "type": "string"
+    },
+    "especieTipo": {
+      "type": "string"
+    },
+    "tipoEmenda": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "data",
+    "fase",
+    "codigoDocumento",
+    "codigoDocumentoResumido",
+    "especieTipo",
+    "tipoEmenda"
+  ]
+}

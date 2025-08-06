@@ -9,58 +9,30 @@ from singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_portal_transparencia.client import PortalTransparenciaStream
 
-# TODO: Delete this is if not using json files for schema definition
 SCHEMAS_DIR = resources.files(__package__) / "schemas"
-# TODO: - Override `UsersStream` and `GroupsStream` with your own stream definition.
-#       - Copy-paste as many times as needed to create multiple stream types.
 
 
-class UsersStream(PortalTransparenciaStream):
+class EmendaStream(PortalTransparenciaStream):
     """Define custom stream."""
 
-    name = "users"
-    path = "/users"
+    name = "emenda"
+    path = "/api-de-dados/emendas"
+    primary_keys: []  # Null because this stream contains records with "S/A" as ID #TODO
+    replication_key = None
+    schema_filepath = SCHEMAS_DIR / "emenda.json"
+
+    def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
+        """Return a context dictionary for child streams."""
+        return {
+            "cod_emenda": record["codigoEmenda"],
+        }
+
+
+class DocumentoEmendaStream(PortalTransparenciaStream):
+    """Define custom stream."""
+
+    name = "documento_emenda"
+    path = "/api-de-dados/emendas/documentos/{cod_emenda}"
     primary_keys: t.ClassVar[list[str]] = ["id"]
     replication_key = None
-    # Optionally, you may also use `schema_filepath` in place of `schema`:
-    # schema_filepath = SCHEMAS_DIR / "users.json"  # noqa: ERA001
-    schema = th.PropertiesList(
-        th.Property("name", th.StringType),
-        th.Property(
-            "id",
-            th.StringType,
-            description="The user's system ID",
-        ),
-        th.Property(
-            "age",
-            th.IntegerType,
-            description="The user's age in years",
-        ),
-        th.Property(
-            "email",
-            th.StringType,
-            description="The user's email address",
-        ),
-        th.Property("street", th.StringType),
-        th.Property("city", th.StringType),
-        th.Property(
-            "state",
-            th.StringType,
-            description="State name in ISO 3166-2 format",
-        ),
-        th.Property("zip", th.StringType),
-    ).to_dict()
-
-
-class GroupsStream(PortalTransparenciaStream):
-    """Define custom stream."""
-
-    name = "groups"
-    path = "/groups"
-    primary_keys: t.ClassVar[list[str]] = ["id"]
-    replication_key = "modified"
-    schema = th.PropertiesList(
-        th.Property("name", th.StringType),
-        th.Property("id", th.StringType),
-        th.Property("modified", th.DateTimeType),
-    ).to_dict()
+    schema_filepath = SCHEMAS_DIR / "documento_emenda.json"

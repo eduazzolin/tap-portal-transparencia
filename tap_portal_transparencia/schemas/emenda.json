@@ -1,0 +1,67 @@
+{
+  "type": "object",
+  "properties": {
+    "codigoEmenda": {
+      "type": "string"
+    },
+    "ano": {
+      "type": "integer"
+    },
+    "tipoEmenda": {
+      "type": "string"
+    },
+    "autor": {
+      "type": "string"
+    },
+    "nomeAutor": {
+      "type": "string"
+    },
+    "numeroEmenda": {
+      "type": "string"
+    },
+    "localidadeDoGasto": {
+      "type": "string"
+    },
+    "funcao": {
+      "type": "string"
+    },
+    "subfuncao": {
+      "type": "string"
+    },
+    "valorEmpenhado": {
+      "type": "string"
+    },
+    "valorLiquidado": {
+      "type": "string"
+    },
+    "valorPago": {
+      "type": "string"
+    },
+    "valorRestoInscrito": {
+      "type": "string"
+    },
+    "valorRestoCancelado": {
+      "type": "string"
+    },
+    "valorRestoPago": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "codigoEmenda",
+    "ano",
+    "tipoEmenda",
+    "autor",
+    "nomeAutor",
+    "numeroEmenda",
+    "localidadeDoGasto",
+    "funcao",
+    "subfuncao",
+    "valorEmpenhado",
+    "valorLiquidado",
+    "valorPago",
+    "valorRestoInscrito",
+    "valorRestoCancelado",
+    "valorRestoPago"
+  ]
+}

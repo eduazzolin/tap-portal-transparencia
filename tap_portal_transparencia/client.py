@@ -16,24 +16,21 @@ if t.TYPE_CHECKING:
     from singer_sdk.helpers.types import Context
 
 
-# TODO: Delete this is if not using json files for schema definition
 SCHEMAS_DIR = resources.files(__package__) / "schemas"
 
 
 class PortalTransparenciaStream(RESTStream):
     """PortalTransparencia stream class."""
 
-    # Update this value if necessary or override `parse_response`.
     records_jsonpath = "$[*]"
 
     # Update this value if necessary or override `get_new_paginator`.
-    next_page_token_jsonpath = "$.next_page"  # noqa: S105
+    next_page_token_jsonpath = "$.next_page"  # noqa: S105 #TODO
 
     @property
     def url_base(self) -> str:
         """Return the API URL root, configurable via tap settings."""
-        # TODO: hardcode a value here, or retrieve it from self.config
-        return "https://api.mysample.com"
+        return "https://api.portaldatransparencia.gov.br"
 
     @property
     def authenticator(self) -> APIKeyAuthenticator:
@@ -44,7 +41,7 @@ class PortalTransparenciaStream(RESTStream):
         """
         return APIKeyAuthenticator.create_for_stream(
             self,
-            key="x-api-key",
+            key="chave-api-dados",
             value=self.config.get("auth_token", ""),
             location="header",
         )
@@ -56,8 +53,6 @@ class PortalTransparenciaStream(RESTStream):
         Returns:
             A dictionary of HTTP headers.
         """
-        # If not using an authenticator, you may also provide inline auth headers:
-        # headers["Private-Token"] = self.config.get("auth_token")  # noqa: ERA001
         return {}
 
     def get_new_paginator(self) -> BaseAPIPaginator | None:
@@ -73,6 +68,7 @@ class PortalTransparenciaStream(RESTStream):
         Returns:
             A pagination helper instance, or ``None`` to indicate pagination
             is not supported.
+            #TODO
         """
         return super().get_new_paginator()
 
