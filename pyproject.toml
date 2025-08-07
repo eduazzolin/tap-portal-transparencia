@@ -33,7 +33,7 @@ s3 = [
 
 [project.scripts]
 # CLI declaration
-tap-portaltransparencia = 'tap_portal_transparencia.tap:TapPortalTransparencia.cli'
+tap-portaltransparencia = 'tap_portaltransparencia.tap:TapPortalTransparencia.cli'
 
 [dependency-groups]
 dev = [
@@ -102,4 +102,4 @@ commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = 
 
 [tool.tox.env.typing]
 dependency_groups = [ "test", "typing" ]
-commands = [ [ "mypy", { replace = "posargs", default = [ "tap_portal_transparencia", "tests" ], extend = true } ] ]
+commands = [ [ "mypy", { replace = "posargs", default = [ "tap_portaltransparencia", "tests" ], extend = true } ] ]

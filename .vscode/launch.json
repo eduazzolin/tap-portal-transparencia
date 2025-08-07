@@ -9,7 +9,7 @@
             "type": "debugpy",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "program": "tap_portal_transparencia",
+            "program": "tap_portaltransparencia",
             "justMyCode": false,
             "args": [
                 "--config",

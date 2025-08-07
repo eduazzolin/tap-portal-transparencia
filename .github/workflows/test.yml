@@ -8,7 +8,7 @@ on:
     branches: [main]
     paths:
     - .github/workflows/test.yml
-    - tap_portal_transparencia/**
+    - tap_portaltransparencia/**
     - tests/**
     - pyproject.toml
     - uv.lock
@@ -16,7 +16,7 @@ on:
     branches: [main]
     paths:
     - .github/workflows/test.yml
-    - tap_portal_transparencia/**
+    - tap_portaltransparencia/**
     - tests/**
     - pyproject.toml
     - uv.lock

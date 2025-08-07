@@ -7,7 +7,7 @@ from importlib import resources
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
-from tap_portal_transparencia.client import PortalTransparenciaStream
+from tap_portaltransparencia.client import PortalTransparenciaStream
 
 SCHEMAS_DIR = resources.files(__package__) / "schemas"
 

@@ -4,7 +4,7 @@ import datetime
 
 from singer_sdk.testing import get_tap_test_class
 
-from tap_portal_transparencia.tap import TapPortalTransparencia
+from tap_portaltransparencia.tap import TapPortalTransparencia
 
 SAMPLE_CONFIG = {
     "start_date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),

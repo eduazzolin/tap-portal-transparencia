@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from tap_portal_transparencia.tap import TapPortalTransparencia
+from tap_portaltransparencia.tap import TapPortalTransparencia
 
 TapPortalTransparencia.cli()
