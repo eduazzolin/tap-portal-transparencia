@@ -33,6 +33,13 @@ class TapPortalTransparencia(Tap):
                     title="ano",
                     description="The year to be extracted from the API",
                 ),
+                th.Property(
+                    "nome_autor",
+                    th.StringType(nullable=True),
+                    required=False,
+                    title="nome_autor",
+                    description="The name of the author to be extracted from the API",
+                ),
             ),
             description="Parameters to be sent to the Emendas endpoint",
             required=False

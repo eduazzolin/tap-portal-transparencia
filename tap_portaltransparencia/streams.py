@@ -5,34 +5,40 @@ from __future__ import annotations
 import typing as t
 from importlib import resources
 
-from singer_sdk import typing as th  # JSON Schema typing helpers
-
 from tap_portaltransparencia.client import PortalTransparenciaStream
 
 SCHEMAS_DIR = resources.files(__package__) / "schemas"
 
 
 class EmendaStream(PortalTransparenciaStream):
-    """Define custom stream."""
+    """
+    # chave primária:
+       - possui valores repetidos, como "S/I" e "REL. GERAL" #TODO
+
+    # incrementalidade:
+       - não possui campo de data, somente ano
+         é possível e comum adicionar documentos a emendas de anos anteriores,
+         portanto não é seguro usar lógico incremental basedo em ano
+    """
 
     name = "emenda"
     path = "/api-de-dados/emendas"
-    primary_keys: t.ClassVar[list[str]] = ["codigoEmenda"] # Null because this stream contains records with "S/A" as ID #TODO
+    primary_keys: t.ClassVar[list[str]] = ["codigoEmenda"]
     replication_key = None
     schema_filepath = SCHEMAS_DIR / "emenda.json"
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
-        """Return a context dictionary for child streams."""
         codigo = record["codigoEmenda"]
 
         if codigo and codigo.isdigit():
             return {
                 "codigoEmenda": codigo,
             }
+        else:
+            return None
 
 
 class DocumentoEmendaStream(PortalTransparenciaStream):
-    """Define custom stream."""
 
     name = "documento_emenda"
     path = "/api-de-dados/emendas/documentos/{codigoEmenda}"

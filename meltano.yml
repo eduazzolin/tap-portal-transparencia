@@ -32,6 +32,10 @@ plugins:
       kind: integer
       label: emendas_config.ano
       description: Specifies the year of the amendments to be extracted
+    - name: emendas_config.nome_autor
+      kind: string
+      label: emendas_config.nome_autor
+      description: Specifies the name of the author of the amendments to be extracted
 
 
     config:
