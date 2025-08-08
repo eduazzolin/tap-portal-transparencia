@@ -22,10 +22,9 @@ SCHEMAS_DIR = resources.files(__package__) / "schemas"
 
 
 class IncrementalPaginator(BasePageNumberPaginator):
-
     # This constant was not present in the documentation, but rather inferred from the API behavior in both endpoints.
     # In a production environment, it is recommended to verify this value with the API support or remove it and set the
-    # has_more method to return True until there are no more records.
+    # `has_more` method to return True until there are no more records.
     RECORDS_PER_PAGE = 15
 
     def has_more(self, response: requests.Response) -> bool:
@@ -86,10 +85,7 @@ class PortalTransparenciaStream(RESTStream):
         params: dict = {}
         if next_page_token:
             params["pagina"] = next_page_token
-        if self.config.get("emendas_config", {}).get("ano"):
-            params["ano"] = self.config.get("emendas_config").get("ano")
-        if self.config.get("emendas_config", {}).get("nome_autor"):
-            params["nomeAutor"] = self.config.get("emendas_config").get("nome_autor").upper()
+
         return params
 
     def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
@@ -101,7 +97,9 @@ class PortalTransparenciaStream(RESTStream):
         Yields:
             Each record from the source.
         """
-        # TODO: Parse response body and return a set of records.
+        if not response.text:
+            return
+
         yield from extract_jsonpath(
             self.records_jsonpath,
             input=response.json(parse_float=decimal.Decimal),

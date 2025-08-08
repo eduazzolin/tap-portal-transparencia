@@ -40,7 +40,7 @@ plugins:
 
     config:
       emendas_config:
-        ano: 2015
+        nome_autor: SCHIAVINATO
     select:
     - emenda.*
     - documento_emenda.*
