@@ -17,15 +17,18 @@ class EmendaStream(PortalTransparenciaStream):
 
     name = "emenda"
     path = "/api-de-dados/emendas"
-    primary_keys: []  # Null because this stream contains records with "S/A" as ID #TODO
+    primary_keys: t.ClassVar[list[str]] = ["codigoEmenda"] # Null because this stream contains records with "S/A" as ID #TODO
     replication_key = None
     schema_filepath = SCHEMAS_DIR / "emenda.json"
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
         """Return a context dictionary for child streams."""
-        return {
-            "cod_emenda": record["codigoEmenda"],
-        }
+        codigo = record["codigoEmenda"]
+
+        if codigo and codigo.isdigit():
+            return {
+                "cod_emenda": codigo,
+            }
 
 
 class DocumentoEmendaStream(PortalTransparenciaStream):
@@ -36,3 +39,4 @@ class DocumentoEmendaStream(PortalTransparenciaStream):
     primary_keys: t.ClassVar[list[str]] = ["id"]
     replication_key = None
     schema_filepath = SCHEMAS_DIR / "documento_emenda.json"
+    parent_stream_type = EmendaStream

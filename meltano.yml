@@ -1,6 +1,6 @@
 version: 1
 send_anonymous_usage_stats: true
-project_id: "tap-portaltransparencia"
+project_id: tap-portaltransparencia
 default_environment: test
 venv:
   backend: uv
@@ -8,8 +8,8 @@ environments:
 - name: test
 plugins:
   extractors:
-  - name: "tap-portaltransparencia"
-    namespace: "tap_portaltransparencia"
+  - name: tap-portaltransparencia
+    namespace: tap_portaltransparencia
     pip_url: -e .
     capabilities:
     - state
@@ -19,30 +19,27 @@ plugins:
     - stream-maps
 
     # TODO: Declare settings and their types here:
-    settings:
-    - name: username
-      label: Username
-      description: The username to use for authentication
-
-    - name: password
-      kind: password
-      label: Password
-      description: The password to use for authentication
-      sensitive: true
-
-    - name: start_date
-      kind: date_iso8601
-      label: Start Date
-      description: Initial date to start extracting data from
-
-    # TODO: Declare required settings here:
     settings_group_validation:
-    - [username, password]
+    - [auth_token]
 
-    # TODO: Declare default configuration values here:
+    settings:
+    - name: auth_token
+      kind: string
+      label: chave-api-dados
+      description: The token to authenticate against the API service
+      sensitive: true
+    - name: emendas_config.ano
+      kind: integer
+      label: emendas_config.ano
+      description: Specifies the year of the amendments to be extracted
+
+
     config:
-      start_date: '2010-01-01T00:00:00Z'
-
+      emendas_config:
+        ano: 2014
+    select:
+    - emenda.*
+    - documento_emenda.*
   loaders:
   - name: target-jsonl
     variant: andyh1203

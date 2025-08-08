@@ -88,9 +88,8 @@ class PortalTransparenciaStream(RESTStream):
         params: dict = {}
         if next_page_token:
             params["page"] = next_page_token
-        if self.replication_key:
-            params["sort"] = "asc"
-            params["order_by"] = self.replication_key
+        if self.config.get("emendas_config", {}).get("ano"):
+            params["ano"] = self.config.get("emendas_config").get("ano")
         return params
 
 
