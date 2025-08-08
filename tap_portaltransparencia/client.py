@@ -8,7 +8,7 @@ from importlib import resources
 
 from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.helpers.jsonpath import extract_jsonpath
-from singer_sdk.pagination import BaseAPIPaginator  # noqa: TC002
+from singer_sdk.pagination import BaseAPIPaginator, BasePageNumberPaginator
 from singer_sdk.streams import RESTStream
 
 if t.TYPE_CHECKING:
@@ -17,14 +17,15 @@ if t.TYPE_CHECKING:
 
 SCHEMAS_DIR = resources.files(__package__) / "schemas"
 
+class IncrementalPaginator(BasePageNumberPaginator):
+
+    def has_more(self, response: requests.Response) -> bool:
+        return bool(response.json())
 
 class PortalTransparenciaStream(RESTStream):
     """PortalTransparencia stream class."""
 
     records_jsonpath = "$[*]"
-
-    # Update this value if necessary or override `get_new_paginator`.
-    next_page_token_jsonpath = "$.next_page"  # noqa: S105 #TODO
 
     @property
     def url_base(self) -> str:
@@ -55,21 +56,12 @@ class PortalTransparenciaStream(RESTStream):
         return {}
 
     def get_new_paginator(self) -> BaseAPIPaginator | None:
-        """Create a new pagination helper instance.
+        """Cria uma nova instância de auxiliar de paginação.
 
-        If the source API can make use of the `next_page_token_jsonpath`
-        attribute, or it contains a `X-Next-Page` header in the response
-        then you can remove this method.
-
-        If you need custom pagination that uses page numbers, "next" links, or
-        other approaches, please read the guide: https://sdk.meltano.com/en/v0.25.0/guides/pagination-classes.html.
-
-        Returns:
-            A pagination helper instance, or ``None`` to indicate pagination
-            is not supported.
-            #TODO
+        Retorna:
+            Uma instância de auxiliar de paginação.
         """
-        return super().get_new_paginator()
+        return IncrementalPaginator(start_value=1)
 
     def get_url_params(
         self,
@@ -87,7 +79,7 @@ class PortalTransparenciaStream(RESTStream):
         """
         params: dict = {}
         if next_page_token:
-            params["page"] = next_page_token
+            params["pagina"] = next_page_token
         if self.config.get("emendas_config", {}).get("ano"):
             params["ano"] = self.config.get("emendas_config").get("ano")
         return params
