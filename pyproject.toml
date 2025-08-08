@@ -24,6 +24,7 @@ requires-python = ">=3.9"
 dependencies = [
     "singer-sdk~=0.48.0",
     "requests~=2.32.3",
+     "tzdata",
 ]
 
 [project.optional-dependencies]

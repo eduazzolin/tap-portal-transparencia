@@ -36,7 +36,7 @@ plugins:
 
     config:
       emendas_config:
-        ano: 2014
+        ano: 2015
     select:
     - emenda.*
     - documento_emenda.*

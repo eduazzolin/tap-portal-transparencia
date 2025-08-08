@@ -3,13 +3,22 @@
 from __future__ import annotations
 
 import decimal
+import sys
+import time
 import typing as t
+from datetime import datetime
 from importlib import resources
+from zoneinfo import ZoneInfo
 
 from singer_sdk.authenticators import APIKeyAuthenticator
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseAPIPaginator, BasePageNumberPaginator
 from singer_sdk.streams import RESTStream
+
+if sys.version_info >= (3, 12):
+    pass
+else:
+    pass
 
 if t.TYPE_CHECKING:
     import requests
@@ -17,10 +26,25 @@ if t.TYPE_CHECKING:
 
 SCHEMAS_DIR = resources.files(__package__) / "schemas"
 
+
 class IncrementalPaginator(BasePageNumberPaginator):
+    """
+    "De 00:00 às 06:00: até 700 requisições por minuto, Nos demais horários: 400 requisições por minuto"
+    https://portaldatransparencia.gov.br/api-de-dados/cadastrar-email
+
+    Rate limit based on:
+    https://github.com/MeltanoLabs/tap-slack.git
+    """
+    now = datetime.now(ZoneInfo("America/Sao_Paulo")).time()
+    MAX_REQUESTS_PER_MINUTE = 700 if now.hour < 6 else 400
+
+    def get_next(self, response: requests.Response) -> int | None:
+        time.sleep(60.0 / self.MAX_REQUESTS_PER_MINUTE)
+        return self._value + 1
 
     def has_more(self, response: requests.Response) -> bool:
         return bool(response.json())
+
 
 class PortalTransparenciaStream(RESTStream):
     """PortalTransparencia stream class."""
@@ -64,9 +88,9 @@ class PortalTransparenciaStream(RESTStream):
         return IncrementalPaginator(start_value=1)
 
     def get_url_params(
-        self,
-        context: Context | None,  # noqa: ARG002
-        next_page_token: t.Any | None,  # noqa: ANN401
+            self,
+            context: Context | None,  # noqa: ARG002
+            next_page_token: t.Any | None,  # noqa: ANN401
     ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
@@ -84,7 +108,6 @@ class PortalTransparenciaStream(RESTStream):
             params["ano"] = self.config.get("emendas_config").get("ano")
         return params
 
-
     def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
         """Parse the response and return an iterator of result records.
 
@@ -101,9 +124,9 @@ class PortalTransparenciaStream(RESTStream):
         )
 
     def post_process(
-        self,
-        row: dict,
-        context: Context | None = None,  # noqa: ARG002
+            self,
+            row: dict,
+            context: Context | None = None,  # noqa: ARG002
     ) -> dict | None:
         """As needed, append or transform raw data to match expected structure.
 
