@@ -21,6 +21,9 @@
     },
     "tipoEmenda": {
       "type": "string"
+    },
+    "codigoEmenda": {
+      "type": "string"
     }
   },
   "required": [
@@ -30,6 +33,7 @@
     "codigoDocumento",
     "codigoDocumentoResumido",
     "especieTipo",
-    "tipoEmenda"
+    "tipoEmenda",
+    "codigoEmenda"
   ]
 }

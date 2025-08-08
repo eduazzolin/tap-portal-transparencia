@@ -27,7 +27,7 @@ class EmendaStream(PortalTransparenciaStream):
 
         if codigo and codigo.isdigit():
             return {
-                "cod_emenda": codigo,
+                "codigoEmenda": codigo,
             }
 
 
@@ -35,7 +35,7 @@ class DocumentoEmendaStream(PortalTransparenciaStream):
     """Define custom stream."""
 
     name = "documento_emenda"
-    path = "/api-de-dados/emendas/documentos/{cod_emenda}"
+    path = "/api-de-dados/emendas/documentos/{codigoEmenda}"
     primary_keys: t.ClassVar[list[str]] = ["id"]
     replication_key = None
     schema_filepath = SCHEMAS_DIR / "documento_emenda.json"

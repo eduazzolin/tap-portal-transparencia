@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import decimal
-import sys
 import time
 import typing as t
 from datetime import datetime
@@ -15,11 +14,6 @@ from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.pagination import BaseAPIPaginator, BasePageNumberPaginator
 from singer_sdk.streams import RESTStream
 
-if sys.version_info >= (3, 12):
-    pass
-else:
-    pass
-
 if t.TYPE_CHECKING:
     import requests
     from singer_sdk.helpers.types import Context
@@ -28,19 +22,6 @@ SCHEMAS_DIR = resources.files(__package__) / "schemas"
 
 
 class IncrementalPaginator(BasePageNumberPaginator):
-    """
-    "De 00:00 às 06:00: até 700 requisições por minuto, Nos demais horários: 400 requisições por minuto"
-    https://portaldatransparencia.gov.br/api-de-dados/cadastrar-email
-
-    Rate limit based on:
-    https://github.com/MeltanoLabs/tap-slack.git
-    """
-    now = datetime.now(ZoneInfo("America/Sao_Paulo")).time()
-    MAX_REQUESTS_PER_MINUTE = 700 if now.hour < 6 else 400
-
-    def get_next(self, response: requests.Response) -> int | None:
-        time.sleep(60.0 / self.MAX_REQUESTS_PER_MINUTE)
-        return self._value + 1
 
     def has_more(self, response: requests.Response) -> bool:
         return bool(response.json())
@@ -142,3 +123,29 @@ class PortalTransparenciaStream(RESTStream):
         """
         # TODO: Delete this method if not needed.
         return row
+
+    def _get_required_delay(self) -> float:
+        """
+        "De 00:00 às 06:00: até 700 requisições por minuto, Nos demais horários: 400 requisições por minuto"
+        - https://portaldatransparencia.gov.br/api-de-dados/cadastrar-email
+        """
+        now = datetime.now(ZoneInfo("America/Sao_Paulo")).time()
+        if now.hour < 6:
+            return 60 / 650
+        else:
+            return 60 / 350
+
+    def _request(self, prepared_request: requests.PreparedRequest, context: Context | None) -> requests.Response:
+        """
+        Overriding the _request method to include a delay to comply with the API rate limits.
+        https://portaldatransparencia.gov.br/api-de-dados/cadastrar-email
+        """
+
+        # Applying the required delay before making the request
+        required_delay = self._get_required_delay()
+        time.sleep(required_delay)
+
+        # Making the actual request with the original _request method
+        response = super()._request(prepared_request, context)
+
+        return response
