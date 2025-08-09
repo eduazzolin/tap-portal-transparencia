@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import typing as t
 from importlib import resources
-from typing import Optional, Any, Dict
+from typing import Any, Mapping, Optional
 
 from tap_portaltransparencia.client import PortalTransparenciaStream
 
@@ -28,7 +28,11 @@ class EmendaStream(PortalTransparenciaStream):
     replication_key = None
     schema_filepath = SCHEMAS_DIR / "emenda.json"
 
-    def get_url_params(self, context: Optional[dict], next_page_token: Optional[Any]) -> Dict[str, Any]:
+    def get_url_params(
+            self,
+            context: Mapping[str, Any] | None,
+            next_page_token: Any | None,
+    ) -> dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
         emendas_config = self.config.get("emendas_config", {})
         if emendas_config.get("ano"):
@@ -37,7 +41,11 @@ class EmendaStream(PortalTransparenciaStream):
             params["nomeAutor"] = emendas_config.get("nome_autor").upper()
         return params
 
-    def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
+    def get_child_context(
+            self,
+            record: dict,
+            context: Mapping[str, Any] | None,
+    ) -> dict | None:
         codigo = record["codigoEmenda"]
         if codigo and codigo.isdigit():
             return {

@@ -1,5 +1,4 @@
 ### A CI workflow template that runs linting and python testing
-### TODO: Modify as needed or as desired.
 
 name: Test tap-portaltransparencia
 
@@ -51,7 +50,8 @@ jobs:
     - name: Run Tox
       run: |
         uvx --with=tox-uv tox -e $(echo py${{ matrix.python-version }} | tr -d .)
-
+      env:
+        TAP_PORTALTRANSPARENCIA_AUTH_TOKEN: ${{ secrets.TAP_PORTALTRANSPARENCIA_AUTH_TOKEN }}
   typing:
     name: Type Checking
     runs-on: ubuntu-latest
@@ -68,3 +68,5 @@ jobs:
     - name: Run Tox
       run: |
         uvx --with=tox-uv tox -e typing
+      env:
+        TAP_PORTALTRANSPARENCIA_AUTH_TOKEN: ${{ secrets.TAP_PORTALTRANSPARENCIA_AUTH_TOKEN }}
