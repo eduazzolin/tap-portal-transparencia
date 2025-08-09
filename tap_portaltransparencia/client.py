@@ -22,6 +22,11 @@ SCHEMAS_DIR = resources.files(__package__) / "schemas"
 
 
 class IncrementalPaginator(BasePageNumberPaginator):
+    """
+    Paginator for the PortalTransparencia API.
+    This paginator uses page numbers to navigate through the API results.
+    """
+
     # This constant was not present in the documentation, but rather inferred from the API behavior in both endpoints.
     # In a production environment, it is recommended to verify this value with the API support or remove it and set the
     # `has_more` method to return True until there are no more records.
@@ -39,16 +44,12 @@ class PortalTransparenciaStream(RESTStream):
 
     @property
     def url_base(self) -> str:
-        """Return the API URL root, configurable via tap settings."""
+        """ Return the API URL root, configurable via tap settings. """
         return "https://api.portaldatransparencia.gov.br"
 
     @property
     def authenticator(self) -> APIKeyAuthenticator:
-        """Return a new authenticator object.
-
-        Returns:
-            An authenticator instance.
-        """
+        """ Return a new authenticator object. """
         return APIKeyAuthenticator.create_for_stream(
             self,
             key="chave-api-dados",
@@ -58,14 +59,11 @@ class PortalTransparenciaStream(RESTStream):
 
     @property
     def http_headers(self) -> dict:
-        """Return the http headers needed.
-
-        Returns:
-            A dictionary of HTTP headers.
-        """
+        """ Return the http headers needed. """
         return {}
 
     def get_new_paginator(self) -> BaseAPIPaginator | None:
+        """ Return a new paginator instance for this stream. """
         return IncrementalPaginator(start_value=1)
 
     def get_url_params(
@@ -104,26 +102,6 @@ class PortalTransparenciaStream(RESTStream):
             self.records_jsonpath,
             input=response.json(parse_float=decimal.Decimal),
         )
-
-    def post_process(
-            self,
-            row: dict,
-            context: Context | None = None,  # noqa: ARG002
-    ) -> dict | None:
-        """As needed, append or transform raw data to match expected structure.
-
-        Note: As of SDK v0.47.0, this method is automatically executed for all stream types.
-        You should not need to call this method directly in custom `get_records` implementations.
-
-        Args:
-            row: An individual record from the stream.
-            context: The stream context.
-
-        Returns:
-            The updated record dictionary, or ``None`` to skip the record.
-        """
-        # TODO: Delete this method if not needed.
-        return row
 
     def _get_required_delay(self) -> float:
         """

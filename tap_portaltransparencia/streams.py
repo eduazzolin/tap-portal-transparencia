@@ -13,18 +13,18 @@ SCHEMAS_DIR = resources.files(__package__) / "schemas"
 
 class EmendaStream(PortalTransparenciaStream):
     """
-    # chave primária:
-       - possui valores repetidos, como "S/I" e "REL. GERAL" #TODO
+    # primary_key: no primary key is defined, as the API does not provide a
+     unique identifier. There are cases like "S/I" e "REL. GERAL" as "codigoEmenda"
+     with multiple records for data under 2020.
 
-    # incrementalidade:
-       - não possui campo de data, somente ano
-         é possível e comum adicionar documentos a emendas de anos anteriores,
-         portanto não é seguro usar lógico incremental basedo em ano
+    # replication_key: no replication key is defined, as the API does not provide a
+     date field. Also, it is common to add documents to amendments from previous years,
+     so using year as a replication key is not safe.
     """
 
     name = "emenda"
     path = "/api-de-dados/emendas"
-    primary_keys: t.ClassVar[list[str]] = ["codigoEmenda"]
+    primary_keys = []  #: t.ClassVar[list[str]] = ["codigoEmenda"]
     replication_key = None
     schema_filepath = SCHEMAS_DIR / "emenda.json"
 

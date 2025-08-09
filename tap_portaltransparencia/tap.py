@@ -13,7 +13,6 @@ class TapPortalTransparencia(Tap):
 
     name = "tap-portaltransparencia"
 
-    # TODO: Update this section with the actual config values you expect:
     config_jsonschema = th.PropertiesList(
         th.Property(
             "auth_token",
@@ -50,7 +49,7 @@ class TapPortalTransparencia(Tap):
         """Return a list of discovered streams.
 
         Returns:
-            A list of discovered streams. #TODO
+            A list of discovered streams.
         """
         return [
             streams.EmendaStream(self),

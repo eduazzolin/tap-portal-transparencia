@@ -18,7 +18,6 @@ plugins:
     - about
     - stream-maps
 
-    # TODO: Declare settings and their types here:
     settings_group_validation:
     - [auth_token]
 
@@ -40,7 +39,7 @@ plugins:
 
     config:
       emendas_config:
-        nome_autor: SCHIAVINATO
+        ano: 2024
     select:
     - emenda.*
     - documento_emenda.*
